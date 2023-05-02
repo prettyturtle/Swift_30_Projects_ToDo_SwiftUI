@@ -11,6 +11,8 @@ import Combine
 final class TodoListViewModel: ObservableObject {
     @Published var todoList: [ToDoItem] = []
     @Published var isPresentedTodoInputView = false
+    @Published var isShowDeleteAlert: (isShow: Bool, item: ToDoItem?) = (false, nil)
+    @Published var willDeletedItem: ToDoItem?
     
     var isUpdated: PassthroughSubject<Void, Never> = PassthroughSubject()
     
@@ -22,6 +24,11 @@ final class TodoListViewModel: ObservableObject {
     
     func fetchTodoList() {
         todoList = ToDoManager.shared.read()
+    }
+    
+    func deleteTodoItem(item: ToDoItem) {
+        ToDoManager.shared.delete(item)
+        isUpdated.send(())
     }
     
     private func bind() {

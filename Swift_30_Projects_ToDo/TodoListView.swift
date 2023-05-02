@@ -26,6 +26,9 @@ struct TodoListView: View {
                             trailing: 0
                         )
                     )
+                    .onLongPressGesture {
+                        viewModel.isShowDeleteAlert = (true, todoItem.wrappedValue)
+                    }
                 
             } // List
             .onAppear {
@@ -52,6 +55,19 @@ struct TodoListView: View {
         .sheet(isPresented: $viewModel.isPresentedTodoInputView) {
             let todoInputViewModel = TodoInputViewModel(isPresentedTodoInputView: $viewModel.isPresentedTodoInputView, isUpdated: viewModel.isUpdated)
             TodoInputView(viewModel: todoInputViewModel)
+        }
+        .alert("정말로 삭제할까요?", isPresented: $viewModel.isShowDeleteAlert.isShow) {
+            Button("Cancel", role: .cancel) {
+                viewModel.isShowDeleteAlert.isShow = false
+            }
+            Button("OK") {
+                guard let deleteItem = viewModel.isShowDeleteAlert.item else {
+                    return
+                }
+                viewModel.deleteTodoItem(item: deleteItem)
+            }
+        } message: {
+            Text("삭제되면 복구할 수 없습니다.")
         }
         
     }

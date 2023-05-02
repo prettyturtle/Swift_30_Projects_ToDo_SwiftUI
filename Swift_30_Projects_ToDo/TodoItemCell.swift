@@ -42,9 +42,6 @@ struct TodoItemCell: View {
             } // Group
             
         } // HStack
-        .onLongPressGesture {
-            ToDoManager.shared.delete(todoItem)
-        }
         
     }
     
