@@ -13,6 +13,7 @@ final class TodoInputViewModel: ObservableObject {
     @Published var location: String = ""
     @Published var description: String = ""
     @Published var timeStemp: Date = .now
+    @Published var id: String?
     
     @Published var isPresentedTodoInputView: Binding<Bool>
     let isUpdated: PassthroughSubject<Void, Never>
@@ -29,14 +30,19 @@ final class TodoInputViewModel: ObservableObject {
     func didTapSaveButton() {
         if !isCheck() { return }
         
-        let todoItem = ToDoItem(
+        var todoItem = ToDoItem(
             title: title,
             description: description,
             location: location,
             timeStamp: timeStemp
         )
         
-        ToDoManager.shared.create(todoItem)
+        if let id = id {
+            todoItem.id = id
+            ToDoManager.shared.update(todoItem)
+        } else {
+            ToDoManager.shared.create(todoItem)
+        }
         
         isUpdated.send(())
         

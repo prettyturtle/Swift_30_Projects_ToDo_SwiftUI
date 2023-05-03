@@ -26,6 +26,20 @@ struct TodoListView: View {
                             trailing: 0
                         )
                     )
+                    .onTapGesture { // Long Press 보다 위에
+                        viewModel.todoInputViewModel = TodoInputViewModel(
+                            isPresentedTodoInputView: $viewModel.isPresentedTodoInputView,
+                            isUpdated: viewModel.isUpdated
+                        )
+                        
+                        viewModel.todoInputViewModel?.id = todoItem.id.wrappedValue
+                        viewModel.todoInputViewModel?.title = todoItem.title.wrappedValue
+                        viewModel.todoInputViewModel?.location = todoItem.location.wrappedValue
+                        viewModel.todoInputViewModel?.description = todoItem.description.wrappedValue
+                        viewModel.todoInputViewModel?.timeStemp = todoItem.timeStamp.wrappedValue
+                        
+                        viewModel.isPresentedTodoInputView = true
+                    }
                     .onLongPressGesture {
                         viewModel.isShowDeleteAlert = (true, todoItem.wrappedValue)
                     }
@@ -40,6 +54,10 @@ struct TodoListView: View {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     
                     Button {
+                        viewModel.todoInputViewModel = TodoInputViewModel(
+                            isPresentedTodoInputView: $viewModel.isPresentedTodoInputView,
+                            isUpdated: viewModel.isUpdated
+                        )
                         
                         viewModel.isPresentedTodoInputView = true
                         
@@ -53,8 +71,9 @@ struct TodoListView: View {
             
         } // NavigationView
         .sheet(isPresented: $viewModel.isPresentedTodoInputView) {
-            let todoInputViewModel = TodoInputViewModel(isPresentedTodoInputView: $viewModel.isPresentedTodoInputView, isUpdated: viewModel.isUpdated)
-            TodoInputView(viewModel: todoInputViewModel)
+            if let todoInputViewModel = viewModel.todoInputViewModel {
+                TodoInputView(viewModel: todoInputViewModel)
+            }
         }
         .alert("정말로 삭제할까요?", isPresented: $viewModel.isShowDeleteAlert.isShow) {
             Button("Cancel", role: .cancel) {

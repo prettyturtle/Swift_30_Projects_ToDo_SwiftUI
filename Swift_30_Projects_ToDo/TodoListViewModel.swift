@@ -16,6 +16,8 @@ final class TodoListViewModel: ObservableObject {
     
     var isUpdated: PassthroughSubject<Void, Never> = PassthroughSubject()
     
+    var todoInputViewModel: TodoInputViewModel?
+    
     private var disposeBag: Set<AnyCancellable> = Set()
     
     init() {
